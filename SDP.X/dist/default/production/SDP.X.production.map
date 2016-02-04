@@ -60,19 +60,19 @@ Program Memory  [Origin = 0x200, Length = 0x155fc]
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200                0xdc           0x14a  (330)
-.text                        0x2dc               0x116           0x1a1  (417)
-.dinit                       0x3f2                 0x8             0xc  (12)
+.text                        0x2dc               0x10c           0x192  (402)
+.dinit                       0x3e8                 0x8             0xc  (12)
 
-                     Total program memory used (bytes):          0x2f7  (759) <1%
+                     Total program memory used (bytes):          0x2e8  (744) <1%
 
 
 Data Memory  [Origin = 0x800, Length = 0x2000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-.nbss                        0x800                   0             0x8  (8)
+.nbss                        0x800                   0             0xc  (12)
 
-                        Total data memory used (bytes):            0x8  (8) <1%
+                        Total data memory used (bytes):            0xc  (12) <1%
 
 
 Dynamic Memory Usage
@@ -80,24 +80,26 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                        0x808                              0x1ff8  (8184)
+stack                        0x80c                              0x1ff4  (8180)
 
-                        Maximum dynamic memory (bytes):         0x1ff8  (8184)
+                        Maximum dynamic memory (bytes):         0x1ff4  (8180)
 
 
 External Symbols in Data Memory (by address):
 
-                    0x0800                  _distance
-                    0x0802                  _avgdist
-                    0x0804                  _TIMER
+                    0x0800                  _i
+                    0x0802                  _distance
+                    0x0804                  _avgdist
                     0x0806                  _initial
+                    0x0808                  _trigdsensor
 
 External Symbols in Data Memory (by name):
 
-                    0x0804                  _TIMER
-                    0x0802                  _avgdist
-                    0x0800                  _distance
+                    0x0804                  _avgdist
+                    0x0802                  _distance
+                    0x0800                  _i
                     0x0806                  _initial
+                    0x0808                  _trigdsensor
 
 External Symbols in Program Memory (by address):
 
@@ -109,14 +111,14 @@ External Symbols in Program Memory (by address):
                   0x00029e                  ___divsi3
                   0x0002bc                  ___udivsi3
                   0x0002dc                  _main
-                  0x000352                  __10us_delay
-                  0x000376                  _ms_delay
-                  0x0003a8                  _Receive_from_Sensor
+                  0x000336                  __10us_delay
+                  0x00035c                  _ms_delay
+                  0x000390                  _Receive_from_Sensor
 
 External Symbols in Program Memory (by name):
 
-                  0x0003a8                  _Receive_from_Sensor
-                  0x000352                  __10us_delay
+                  0x000390                  _Receive_from_Sensor
+                  0x000336                  __10us_delay
                   0x00029a                  __DefaultInterrupt
                   0x00029e                  ___divsi3
                   0x0002bc                  ___udivsi3
@@ -125,7 +127,7 @@ External Symbols in Program Memory (by name):
                   0x00022c                  __psv_init
                   0x000200                  __resetPRI
                   0x0002dc                  _main
-                  0x000376                  _ms_delay
+                  0x00035c                  _ms_delay
 
 Memory Configuration
 
@@ -198,26 +200,26 @@ __CONFIG1         0x0157fe          0x2
 .comment
  *(.comment)
 
-.debug_info       0x000000        0x5d9
+.debug_info       0x000000        0x731
  *(.debug_info)
- .debug_info      0x000000        0x5d9 build/default/production/sdp.o
+ .debug_info      0x000000        0x731 build/default/production/sdp.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x133
+.debug_abbrev     0x000000        0x134
  *(.debug_abbrev)
- .debug_abbrev    0x000000        0x133 build/default/production/sdp.o
+ .debug_abbrev    0x000000        0x134 build/default/production/sdp.o
 
-.debug_line       0x000000        0x23b
+.debug_line       0x000000        0x26b
  *(.debug_line)
- .debug_line      0x000000        0x23b build/default/production/sdp.o
+ .debug_line      0x000000        0x26b build/default/production/sdp.o
 
 .debug_frame      0x000000         0x54
  *(.debug_frame)
  .debug_frame     0x000000         0x54 build/default/production/sdp.o
 
-.debug_str        0x000000         0x1d
+.debug_str        0x000000         0x33
  *(.debug_str)
- .debug_str       0x000000         0x1d build/default/production/sdp.o
+ .debug_str       0x000000         0x33 build/default/production/sdp.o
 
 .debug_loc
  *(.debug_loc)
@@ -226,10 +228,10 @@ __CONFIG1         0x0157fe          0x2
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0x99
+                  0x000000         0xa5
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x99 build/default/production/sdp.o
+                  0x000000         0xa5 build/default/production/sdp.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -1076,36 +1078,37 @@ LOAD default_isr
 LOAD data_init
 
 .debug_pubtypes
-                  0x000018         0x50
+                  0x000018         0x6f
  .debug_pubtypes
-                  0x000018         0x50 build/default/production/sdp.o
+                  0x000018         0x6f build/default/production/sdp.o
 
 __c30_signature
-                  0x000068         0x1e
+                  0x000087         0x1e
  __c30_signature
-                  0x000068          0x6 build/default/production/sdp.o
+                  0x000087          0x6 build/default/production/sdp.o
  __c30_signature
-                  0x00006e          0x6 c:/program files (x86)/microchip/xc16/v1.25/bin/bin/../../lib\liblega-pic30-elf.a(crt0_standard.o)
+                  0x00008d          0x6 c:/program files (x86)/microchip/xc16/v1.25/bin/bin/../../lib\liblega-pic30-elf.a(crt0_standard.o)
  __c30_signature
-                  0x000074          0x6 c:/program files (x86)/microchip/xc16/v1.25/bin/bin/../../lib\liblega-pic30-elf.a(data_init_standard.o)
+                  0x000093          0x6 c:/program files (x86)/microchip/xc16/v1.25/bin/bin/../../lib\liblega-pic30-elf.a(data_init_standard.o)
  __c30_signature
-                  0x00007a          0x6 c:/program files (x86)/microchip/xc16/v1.25/bin/bin/../../lib\libm-elf.a(divsi3.eo)
+                  0x000099          0x6 c:/program files (x86)/microchip/xc16/v1.25/bin/bin/../../lib\libm-elf.a(divsi3.eo)
  __c30_signature
-                  0x000080          0x6 c:/program files (x86)/microchip/xc16/v1.25/bin/bin/../../lib\libm-elf.a(udivsi3.eo)
+                  0x00009f          0x6 c:/program files (x86)/microchip/xc16/v1.25/bin/bin/../../lib\libm-elf.a(udivsi3.eo)
 
-.nbss               0x0800          0x8
- .nbss              0x0800          0x8 build/default/production/sdp.o
-                    0x0800                  _distance
-                    0x0802                  _avgdist
-                    0x0804                  _TIMER
+.nbss               0x0800          0xc
+ .nbss              0x0800          0xc build/default/production/sdp.o
+                    0x0800                  _i
+                    0x0802                  _distance
+                    0x0804                  _avgdist
                     0x0806                  _initial
+                    0x0808                  _trigdsensor
 
-.text             0x0002dc        0x116
- .text            0x0002dc        0x116 build/default/production/sdp.o
+.text             0x0002dc        0x10c
+ .text            0x0002dc        0x10c build/default/production/sdp.o
                   0x0002dc                  _main
-                  0x000352                  __10us_delay
-                  0x000376                  _ms_delay
-                  0x0003a8                  _Receive_from_Sensor
+                  0x000336                  __10us_delay
+                  0x00035c                  _ms_delay
+                  0x000390                  _Receive_from_Sensor
 
-.dinit            0x0003f2          0x8
- .dinit           0x0003f2          0x8 data_init
+.dinit            0x0003e8          0x8
+ .dinit           0x0003e8          0x8 data_init
