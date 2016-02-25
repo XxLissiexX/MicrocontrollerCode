@@ -29,7 +29,7 @@
  */
 void _10us_delay(int);
 void ms_delay(int);
-int Receive_from_Sensor(void);
+void Receive_from_Sensor(void);
 
 int i;                      //Loop Counter
 int distance = 0;           //Sensor Distance value (inches))
@@ -54,7 +54,7 @@ int main(void) {
         _10us_delay(1);        //Not exact, but close enough! (~N+1 uS) WRONG
         PORTDbits.RD0 = 0;     //Stop Pulse TO Sensor on RD0 (Array 1)
         
-        distance = Receive_from_Sensor();  //Return Distance value (inches)
+        Receive_from_Sensor();  //Return Distance value (inches)
 
         // Below code compares with 10 Inches     
               //FAKEPOTHOLE (Closer to Breakout)
@@ -71,7 +71,7 @@ int main(void) {
             PORTAbits.RA2 = 0;
         }
         while (TMR3 < 60000); //Wait till end of 30mS cycle
-        ms_delay(10);       //Delay between pulses to get reading back. SHORTEN!
+        ms_delay(20);       //Delay between pulses to get reading back. SHORTEN!
     }
     return 0;
 }
@@ -96,21 +96,69 @@ void ms_delay(int N) {
 	return;
 }
 
-int Receive_from_Sensor(void) {
-    int time = 0;
-    while (PORTE == 0x0000);
-        TMR3 = 0;              //set timer 3 to 0
-    while (TMR3 < 2960) {  //  2960 = ~10 inches
-        if (PORTEbits.RE0 == 0) {
-           trigdsensor[0] = 1;
+//int Receive_from_Sensor(void) {
+//    int time = 0;
+//    while (PORTE == 0x0000);
+//        TMR3 = 0;              //set timer 3 to 0
+//    while (TMR3 < 2960) {  //  2960 = ~10 inches
+//        if (PORTEbits.RE0 == 0) {
+//           trigdsensor[0] = 1;
+//        }
+//        if (PORTEbits.RE1 == 0) {
+//            trigdsensor[1] = 1;
+//        }
+//    }
+//    time = TMR3 * 8 / 16000000; //Time(sec) = TimerVal * prescaler / Fcyc
+//    distance = (int) (time * 10^6) / 148;  //INCHES = Time(uS) / 148
+//                                         
+//    return distance;
+//}
+
+void Receive_from_Sensor(void) {
+    int prev0 = 0;
+    int prev1 = 0;
+    
+    int tstart0;
+    int tstart1;
+    
+    int tend0 = 0;
+    int tend1 = 0;
+    
+    TMR3 = 0;
+    while (TMR3 < 10000) {  // While Time < 5mS
+        if (PORTEbits.RE0 == 1 && prev0 == 0) {
+            prev0 = 1;
+            tstart0 = TMR3;
         }
-        if (PORTEbits.RE1 == 0) {
-            trigdsensor[1] = 1;
+        if (PORTEbits.RE1 == 1 && prev1 == 0) {
+            prev1 = 1;
+            tstart1 = TMR3;
+        }
+        if (PORTEbits.RE0 == 0 && prev0 == 1) {
+            prev0 = 0;
+            tend0 = TMR3;
+        }
+        if (PORTEbits.RE1 == 0 && prev1 == 1) {
+            prev1 = 0;
+            tend1 = TMR3;
         }
     }
-    time = TMR3 * 8 / 16000000; //Time(sec) = TimerVal * prescaler / Fcyc
-    distance = (int) (time * 10^6) / 148;  //INCHES = Time(uS) / 148
-                                         
-    return distance;
+    if (tend0 == 0) {
+        tend0 = TMR3;
+    }
+    if (tend1 == 0) {
+        tend1 = TMR3;
+    }
+    if (tend0 - tstart0 < 2961) { //2960 ~= 10 inches
+        trigdsensor[0] = 1;
+    }
+    else if (tend0 - tstart0 > 2961) {
+        trigdsensor[0] = 0;
+    }
+    if (tend1 - tstart1 < 2961) { //2960 ~= 10 inches
+        trigdsensor[1] = 1;
+    }
+    else if (tend1 - tstart1 > 2961) {
+        trigdsensor[1] = 0;
+    }
 }
-
